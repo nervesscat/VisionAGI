@@ -1,5 +1,6 @@
 from openai import OpenAI
 from action import Actioner, Utils
+from grafics import GraphicsTools
 
 class OpenAIConn:
     __system_message = ""
@@ -54,6 +55,9 @@ class OpenAIConn:
 
         print(response.choices[0].message.content)
         return self.util.parse_and_clean(response.choices[0].message.content)
+
+    def set_system_message(self, system_message):
+        self.__system_message = system_message
 
 class Tasker(OpenAIConn):
     __system_message = """
@@ -156,3 +160,47 @@ class Tasker(OpenAIConn):
         todo = self._create_visual_completion(super_task, base64_image)
         self.traverse_tasks(todo["list"])
         
+class VisualAI(OpenAIConn):
+    __system_message = """
+        You're an expert in the visual domain and coordinates, you're an expert in follow grids correctly.
+        The prompt given to you'll be called as the prompt-task.
+        You will have understand how to complete the prompt-task using the image, for example if the task is close the browser, 
+        you'll need to find the close button and then in a JSON format you'll need to specify the coordinates of the close button.
+
+        The image that you'll be given will be a screenshot of the screen, it has a grid to help you to find the coordinates of the elements.
+        Remember, you're an expert in the visual domain, so you'll need to find the coordinates of the elements in the image following the grid.
+
+        Create a reasoning of where the element is located in the image and then the JSON format
+
+        The blue lines are not taged, the red lines are taged, the red lines are 200px scale, the blue lines are 100px scale.
+
+        Remainder: Obviusly a lot of elements don't touch the lines, so as an expert in finding coordinates
+        don't be afraid to give a coordinate that is not exactly in the line, but it's near by the line.
+
+        Response example:
+
+        The close button is the x in the right top corner of the browser, this is near by the first blue row (100px) but it didn't touch it, it's at the middle,
+        also it's near by the last blue column (1900px) but it barely touch it, so the coordinates are (1898, 63).
+
+        ```json
+        {
+            "task": "Close the browser",
+            "coordinates": {
+                "x": 100,
+                "y": 200
+            }
+        }
+        ```
+    """
+    def __init__(self):
+        super().__init__(self.__system_message)
+        self.actioner = Actioner()
+        self.util = Utils()
+
+    def create_visual_tasks(self, super_task):
+        GraphicsTools("screenshot.png").add_grid("screenmod.png")
+        base64_image = self.util.encode_image('screenmod.png')
+        todo = self._create_visual_completion(super_task, base64_image)
+        (x, y) = (todo["coordinates"]["x"], todo["coordinates"]["y"])
+        GraphicsTools("screenshot.png").insert_mouse_cursor(x, y, "screenshot_cursor.png")
+        #self.traverse_tasks(todo["list"])
