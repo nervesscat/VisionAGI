@@ -4,7 +4,7 @@
 <span style="color: orange; font-size: 1.5em;">**This is a non-finished proyect, if you want to collaborate, don't be afraid and contact with me :D**</span>
 
 # VisionGPT - Introduction
-VisionGPT is an **AutoGPT** this model speaks with itself in order to achieve a goal, this will be everything that can be replicated in a computer. This model use a combination of **GPT-3.5 Turbo**, **GPT-4** and **GPT-V** models.
+VisionGPT is an **AutoGPT**, a model that engages in dialogue with itself to accomplish a specific task. It encompasses all aspects that can be emulated in a computer. This model harnesses a blend of **GPT-3.5 Turbo**, **GPT-4**, and **GPT-V** models.
 
 # Installation
 
