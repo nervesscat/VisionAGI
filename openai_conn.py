@@ -30,12 +30,12 @@ class OpenAIConn:
 
     def _create_visual_completion(self, super_task, base64_image):
         response = self.client.chat.completions.create(
-            model=__GPTV_NAME_MODEL,
+            model=self.__GPTV_NAME_MODEL,
             messages=[
                 {
                 "role": "user",
                 "content": [
-                    {"type": "text", "text" : self.__system_message + "\n" + super_task},
+                    {"type": "text", "text" : self.__system_message + "\n" + str(super_task)},
                     {
                     "type": "image_url",
                     "image_url": {
@@ -49,7 +49,6 @@ class OpenAIConn:
           max_tokens=500,
         )
 
-        print(response.choices[0].message.content)
         return self.util.parse_and_clean(response.choices[0].message.content)
 
     def set_system_message(self, system_message):

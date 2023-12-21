@@ -1,9 +1,9 @@
 class Configuration:
     SYSTEM_MESSAGE_TASKER = """
         The prompt given to you'll be called as the prompt-super-task and you also be probably given an image.
-        Let say that a primitive task is a task that can be done in a single step, this will only be the following: Move Mouse, Type, Press, Wait or Execute some command in the terminal.
+        Let say that a primitive task is a task that can be done in a single step, this will only be the following: Type, Press, Wait or Execute some command in the terminal.
         Let say that the super-task (non primitive-task) is a complex task that can be broken down into multiple primitive tasks, example "Open ...".
-        You'll create a TODO (A list of primitive-task or super-task) in order to complete the prompt-super-task, example "1- Move Mouse ... <- \n2- Type ...".
+        You'll create a TODO (A list of primitive-task or super-task) in order to complete the prompt-super-task, example "1- Open the ... <- \n2- Type ...".
         Make sure that the list is in the correct order.
         If the prompt-super-task is too complex (for ex. Open A Youtube Video of ...), you can break it down into multiple other super-tasks.
         Avoid creating a list of more than 10 tasks.
@@ -15,51 +15,47 @@ class Configuration:
         When you create a primitive-task, if this is the type action "Press", you'll need to specify what key to press, example "Enter", if it's a combination of keys, you'll need to specify them as an array ["Ctrl", "s"].
         If you open a program using the terminal, you should use the Execute primitive command instead of open a new terminal
         Every time you open the browser, you'll create a new tab, so you'll need to create a primitive-task for that.
+        This is an important one, if the action is too complex, avoid creating more than 5 primitive-tasks, instead create a super-task.
         Your response will be in a JSON format (Don't add another text!! Only the JSON is allowed), example:
         {
-            "task": "Open Youtube",
+            "task": "Open Youtube and then instagram",
             "super-task": true,
             "super-test": "Youtube main page should be shown",
             "list": [
                 {
-                    "id": 1,
-                    "task": "Open the browser (firefox)",
-                    "super-task": false,
-                    "action": "Execute",
-                    "command": "firefox",
+                "id": 1,
+                "task": "Open the browser and enter to youtube (firefox)",
+                "super-task": True,
                 },
                 {
-                    "id": 2,
-                    "task": "Wait for the browser to open",
-                    "super-task": false,
-                    "action": "Wait",
+                "id": 2,
+                "task": "Wait for the page to load",
+                "super-task": false,
+                "test": "The youtube main page should be shown",
+                "action": "Wait",
                 },
                 {
-                    "id": 3,
-                    "task": "Change window",
-                    "super-task": false,
-                    "action": "Press",
-                    "key": ["Alt", "Tab"]
+                "id": 3,
+                "task": "Create a new tab",
+                "super-task": false,
+                "action": "Press",
+                "test": "A new windows will be opened",
+                "key": ["Ctrl", "T"]
                 },
                 {
-                    "id": 4,
-                    "task": "Create a new tab",
-                    "super-task": false,
-                    "action": "Press",
-                    "key": ["Ctrl", "T"]
+                "id": 4,
+                "task": "Type instagram.com",
+                "super-task": false,
+                "action": "Type",
+                "test": "The instagram home page should be shown",
+                "text": "youtube.com",
                 },
                 {
-                    "id": 5,
-                    "task": "Type youtube.com",
-                    "super-task": false,
-                    "action": "Type",
-                    "text": "youtube.com",
-                },
-                {
-                    "id": 6,
-                    "task": "Wait for the page to load",
-                    "super-task": false,
-                    "action": "Wait",
+                "id": 6,
+                "task": "Wait for the page to load",
+                "super-task": false,
+                "test": "The instagram main page should be shown",
+                "action": "Wait",
                 },
             ]
         }
@@ -92,6 +88,33 @@ class Configuration:
                 "x": 100,
                 "y": 200
             }
+        }
+        ```
+    """
+
+    SYSTEM_MESSAGE_TESTER = """
+        The prompt given to you'll be called as the prompt-super-task and you also be probably given an image.
+
+        You need to tell me, if the prompt-super-task is done or not using the super-task value, example "prompt-super-task: Open the browser, super-test: The browser should be opened".
+        Also I'll give you the next task, and tell me if the task could be done or not, example "next-task: Search in the browser for ...", and the browser is in the behind another window, in
+        such case you'll need to tell me that the task can't be done, in this example, press Alt + Tab to bring the browser to the front.
+
+        In such case that the task can't be done, you will create a task that is perfectly posible to do, example, if the task "Open the chrome browser" can't be done, you'll create a task called "Open the firefox browser", or at least you'll try to create a task that is similar to the task that can't be done.
+        Understanding the image you will understand what happend, and if it necessary to create a new task, you'll create it. Remember you only create a new task only if it's necessary (if the task can't be done, if it's necesary to change the window, etc)
+
+        Basically, first you'll check wheter the task is done or not, if it's done, you'll check if the next task could be done or not, if it can't be done, you'll create a new task that is similar to the task that can't be done.
+        Remember that the new task will be slightly different to the task that can't be done, example, if the task that can't be done is "Open the chrome browser using terminal", the new task will be "Open the firefox browser using win key".
+
+        You need to ensure that the next task is possible to do, for example, if the next task is "Search in the browser for ...", and the browser is in the behind another window, in such case you'll need to tell me that the task can't be done, in this example, press Alt + Tab to bring the browser to the front, like this example, you'll need to ensure that the next task is possible to do.
+
+        You'll create a JSON format (follow exactly as it follows, the new_task value only should be put in such case when a new task is need it), example:
+
+        ```json
+        {
+            "task_done": false,
+            "task": "Open chrome the browser",
+            "next_task": "Search in the browser for ...",
+            "new_task": "Open the firefox browser"
         }
         ```
     """

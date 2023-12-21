@@ -4,13 +4,14 @@ import math
 class GraphicsTools:
     def __init__(self, filename):
         self.image = Image.open(filename)
-        self.draw = ImageDraw.Draw(self.image) 
+        self.draw = ImageDraw.Draw(self.image)
+        self.image_name = filename
 
-    def add_grid(self, output_filename):
+    def add_grid(self):
         image_width, image_height = self.image.size
         self.create_columns(image_width, image_height)
         self.create_rows(image_width, image_height)
-        self.save_image(output_filename)
+        self.save_image("grid_" + self.image_name)
         
     def create_columns(self, image_width, image_height):
         total_columns = math.floor(image_width/100)
@@ -47,7 +48,7 @@ class GraphicsTools:
         font = ImageFont.truetype("cantarell.ttf", font_size)
         self.draw.text((x, y), text, fill=font_color, font=font)
 
-    def insert_mouse_cursor(self, x, y, output_filename):
+    def insert_mouse_cursor(self, x, y):
         cursor_image = Image.open("assets/icons/mouse_cursor.png")
         cursor_width, cursor_height = cursor_image.size
         if x > self.image.width - cursor_width:
@@ -61,7 +62,16 @@ class GraphicsTools:
             y = y - cursor_height
 
         self.image.paste(cursor_image, (x, y), cursor_image)
-        self.save_image(output_filename)
+        self.save_image("cursor_" + self.image_name)
 
     def save_image(self, filename):
         self.image.save(filename)
+
+    def __delete_image(self, filename):
+        os.remove(self.image_name)
+
+    def delete_all_images(self, filename):
+        os.remove("grid_" + self.image_name)
+        os.remove("cursor_" + self.image_name)
+        os.remove(self.image_name)
+        

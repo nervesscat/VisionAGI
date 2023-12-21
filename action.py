@@ -30,8 +30,9 @@ class Actioner:
         pyautogui.write(text)
         self.wait(2)
 
-    def take_screenshot(self):
+    def take_screenshot(self, filename):
         screenshot = pyautogui.screenshot()
+        screenshot.save(filename)
 
     def wait(self, sec):
         pyautogui.sleep(sec)
@@ -53,4 +54,6 @@ class Utils:
             cleaned_text = '\n'.join(cleaned_lines)
             return self.parse_json(cleaned_text)
         else:
+            print(textToParse)
+            raise Exception("No JSON found")
             return None

@@ -3,7 +3,7 @@
 
 <span style="color: orange; font-size: 1.5em;">**This is a non-finished proyect, if you want to collaborate, don't be afraid and contact with me :D**</span>
 
-# VisionGPT - Introduction
+# VisionGPT 0.1v - Introduction
 VisionGPT is an **AutoGPT**, a model that engages in dialogue with itself to accomplish a specific task. It encompasses all aspects that can be emulated in a computer. This model harnesses a blend of **GPT-3.5 Turbo**, **GPT-4**, and **GPT-V** models.
 
 # Installation
