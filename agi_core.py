@@ -7,13 +7,14 @@ from print_handler import PrintHandler as handler
 class Tasker(OpenAIConn):
     __system_message = Configuration.SYSTEM_MESSAGE_TASKER
     
-    def __init__(self, image_name):
+    def __init__(self, image_name, test_mode=False):
         super().__init__(self.__system_message)
         self.__actioner = Actioner()
         self.__tester = TaskerTest()
         self.__util = Utils()
         self.__print_handler = handler()
         self.__image_name = image_name
+        self.__test_mode = test_mode
 
     def create_normal_tasks(self, super_task):
         try:
@@ -34,18 +35,21 @@ class Tasker(OpenAIConn):
                 self.create_normal_tasks(task["task"])
             else:
                 self.create_primitive_task(task)
+                if not self.__test_mode:
+                    continue
+
                 next_task_id = task["id"] + 1
                 if next_task_id < len(tasks):
                     next_task = tasks[next_task_id]
                     response = self.__tester.visual_confirmation(task["task"], task["test"], next_task["task"], self.__image_name)
                 else:
                     response = self.__tester.visual_confirmation(task["task"], task["test"], "No more tasks", self.__image_name)
-                
-                if not response["task_done"]:
-                    self.create_vision_tasks(super_task)
+            
+            if not response["task_done"]:
+                self.create_vision_tasks(super_task)
 
-                if response["new_task"]:
-                    self.create_normal_tasks(response["new_task"])
+            if response["new_task"]:
+                self.create_normal_tasks(response["new_task"])
                     
         response = self.__tester.visual_confirmation(super_task, super_test, "No more tasks", self.__image_name)
         if response["new_task"]:

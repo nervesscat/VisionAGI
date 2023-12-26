@@ -1,5 +1,9 @@
+import platform
+
 class Configuration:
+    OPERATING_SYSTEM = platform.system()
     SYSTEM_MESSAGE_TASKER = """
+        Actual OS: """ + OPERATING_SYSTEM + """
         The prompt given to you'll be called as the prompt-super-task and you also be probably given an image.
         Let say that a primitive task is a task that can be done in a single step, this will only be the following: Type, Press, Wait or Execute some command in the terminal.
         Let say that the super-task (non primitive-task) is a complex task that can be broken down into multiple primitive tasks, example "Open ...".
@@ -24,18 +28,27 @@ class Configuration:
             "list": [
                 {
                 "id": 1,
-                "task": "Open the browser and enter to youtube (firefox)",
+                "task": "Open the browser (firefox)",
                 "super-task": True,
+                "test": "The browser should be opened",
                 },
                 {
                 "id": 2,
+                "task": "Change the window to the browser",
+                "super-task": false,
+                "action": "Press",
+                "test": "The browser should be in the front",
+                "key": ["Alt", "Tab"]
+                }
+                {
+                "id": 3,
                 "task": "Wait for the page to load",
                 "super-task": false,
                 "test": "The youtube main page should be shown",
                 "action": "Wait",
                 },
                 {
-                "id": 3,
+                "id": 4,
                 "task": "Create a new tab",
                 "super-task": false,
                 "action": "Press",
@@ -43,7 +56,7 @@ class Configuration:
                 "key": ["Ctrl", "T"]
                 },
                 {
-                "id": 4,
+                "id": 5,
                 "task": "Type instagram.com",
                 "super-task": false,
                 "action": "Type",

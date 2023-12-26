@@ -54,6 +54,5 @@ class Utils:
             cleaned_text = '\n'.join(cleaned_lines)
             return self.parse_json(cleaned_text)
         else:
-            print(textToParse)
             raise Exception("No JSON found")
             return None

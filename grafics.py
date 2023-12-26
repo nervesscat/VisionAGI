@@ -70,8 +70,10 @@ class GraphicsTools:
     def __delete_image(self, filename):
         os.remove(self.image_name)
 
-    def delete_all_images(self, filename):
-        os.remove("grid_" + self.image_name)
-        os.remove("cursor_" + self.image_name)
-        os.remove(self.image_name)
-        
+    def delete_all_images(self):
+        try:
+            os.remove("grid_" + self.image_name)
+            os.remove("cursor_" + self.image_name)
+            os.remove(self.image_name)
+        except:
+            pass
